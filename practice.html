@@ -1,94 +1,43 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Practice</title>
+ <title>Practice</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  	<script src="jspsych-6.0.5/jspsych.js"></script>
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="jspsych-6.0.5/jspsych.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-html-slider-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-survey-likert.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-survey-text.js"></script>
 
-  	<link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+
+  <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
 </head>
 <body></body>
 
+
 <script>
 
-    /// assigning images to the list
-
-        ///loading images
- imageList = [
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg",
-    "testImageSet/1019.jpg"
-    ]
-
-  ///creating empty lists for each condition
-
-    upArrowImages = []
-    downArrowImages = []
-    lookNegativeImages = []
-
-  // sorting the imageList by arousal 
-
-  // function creatingConditions(){
-
-  //   /// assigning images to the list
-
-  //   var i;
-  //   for (i = 0; i < imageList.length; i++) {
-
-  //       if (i % 3 == 0) {
-  //         upArrowImages.push(imageList[i]);
-  //       };
-  //     if (i%3 == 1) {
-  //         downArrowImages.push(imageList[i]);
-  //       };
-  //       if (i%3 == 2) {
-  //         lookNegativeImages.push(imageList[i]);
-  //       };
-  //   }
-  // }
-
-    function saveData() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if(xhr.status == 200){
-        var response = JSON.parse(xhr.responseText);
-        console.log(response.success);
-      }
-    };
-    xhr.send(jsPsych.data.get().json());
-  }
+function saveData() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    if(xhr.status == 200){
+      var response = JSON.parse(xhr.responseText);
+      console.log(response.success);
+    }
+  };
+  xhr.send(jsPsych.data.get().json());
+}
 
     ///variables for drawing arrows
     var upArrow = "<p> <span style=font-size:200px; position:absolute; left: 100px'>&#8681;</span>"
     var downArrow = "<span style='float: middle; font-size: 200px'>&#127909;</span> " 
     var lookNeutral = "<span style= font-size:220px;'>&#8679;</span></p>"
+
 
     /* create timeline */
     var timeline = [];
@@ -100,23 +49,23 @@
     timeline.push(welcome);
     /* define welcome message trial */
 
+     var id = prompt("Please enter your pin number")
+
     // defining groups of questions that will go together.
     var survey_trial = {
       type: 'survey-text',
       questions: [{prompt: "Subject ID"}, {prompt: "Date"}],
       // }
     };
-
+	
     ///var subjectID = survey_trial.responses('Q0')
-
     timeline.push(survey_trial);
 
     var testStimuli = [
         {stimulus: "testImageSet/1019.jpg", cue: upArrow},
         {stimulus: "testImageSet/1022.jpg", cue: downArrow}
     ];
-
-
+	
     var fixation = {
       type: 'html-keyboard-response',
       stimulus: '<div style="font-size:60px;">+</div>',
@@ -134,7 +83,6 @@
       trial_duration: 1000
     }
 
-
     var cueTrial = {
         type: "html-keyboard-response",
         stimulus: jsPsych.timelineVariable('cue') ,
@@ -145,31 +93,25 @@
 
     // defining two different response scales that can be used.
     var scale_1 = ["1", "2", "3", "4"];
-
+	
     var responseTrial = {
         type: 'survey-likert',
         questions: [{prompt: "How negative do you feel?", labels: scale_1}],
     };
-
-
     var test_procedure = {
         timeline: [cueTrial, testTrial, responseTrial, fixation],
         timeline_variables: testStimuli
     }
-
-
     // jsPsych.data.addProperties({
     // subject: subjectID
     // });
     
-
     timeline.push(test_procedure);
-
-
     jsPsych.init({
       timeline: timeline,
       on_finish: saveData
 });
+
 
 </script>
 </html>
