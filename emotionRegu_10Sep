@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Practice</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="jspsych-6.0.5/jspsych.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-html-slider-response.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-survey-likert.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-survey-text.js"></script>
+
+<link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+
+</head>
+<body> 
+<!-- %style="background-color: color" -->
+  
+</body>
+
+
+<script>
+
+
+
+  function saveData() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if(xhr.status == 200){
+        var response = JSON.parse(xhr.responseText);
+        console.log(response.success);
+      }
+    };
+    xhr.send(jsPsych.data.get().json());
+  }
+  
+  function replicateArray(array, n) {
+    // Create an array of size "n" with undefined values
+    var arrays = Array.apply(null, new Array(n)); 
+
+    // Replace each "undefined" with our array, resulting in an array of n copies of our array
+    arrays = arrays.map(function() { return array });
+
+    // Flatten our array of arrays
+    return [].concat.apply([], arrays);
+  }
+
+
+
+  ///variables for drawing arrows
+  
+    var downArrow = "<p> <span style='font-size:100px;color: transparent;  text-shadow: 0 0 0 green; '>&#8681</span>"
+    var lookNeutral = "<span style='float: middle; font-size: 200px'>&#127909</span> " 
+    var upArrow = "<span style='font-size:220px; color: transparent;  text-shadow: 0 0 0 red;'>&#8679</span></p>"
+
+
+    /* create timeline */
+    var timeline = [];
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin." 
+    };
+    timeline.push(welcome);
+    
+
+    /* define welcome message trial */
+    //var id = prompt("Please enter your pin number")
+    // defining groups of questions that will go together.
+    var survey_trial = {
+      type: 'survey-text',
+      questions: [{prompt: "Subject ID"}, {prompt: "Date"}],
+      // }
+    };
+  
+    ///var subjectID = survey_trial.responses('Q0')
+    timeline.push(survey_trial);
+    
+    // var cue_image_procedure = {
+    //   timeline: [{cueTrial},
+    //   {testTrial},
+    //   {responseTrial},
+    //   {fixation}
+    //   ]
+
+    //   timeline_variables: [
+    //     {stimulus: "testImageSet/1019.jpg", cue: upArrow},
+    //     {stimulus: "testImageSet/1022.jpg", cue: downArrow}
+    //   ]
+    // }
+
+
+    //creating images and cues
+    var images = [
+      "testImageSet/1019.jpg", 
+      "testImageSet/1022.jpg",
+      "testImageSet/1026.jpg",
+      "testImageSet/1030.jpg"
+    ];
+
+    var cues = [
+    upArrow,
+    downArrow,
+    lookNeutral, 
+    upArrow];
+    
+    //shuffling the lists
+    var randImages = jsPsych.randomization.shuffle(images);
+    var randCues = jsPsych.randomization.shuffle(cues);
+
+    //feed it to the trial lists
+    var imageTrials = [];
+    var cueTrials = [];
+    
+    for (var i = 0; i < randImages.length; i++){
+      imageTrials.push({
+        stimulus: imageTrials[i]
+      })
+    }
+
+    for (var i = 0; i < randCues.length; i++){
+      cueTrials.push({
+        stimulus: randCues[i]
+      })
+    }
+
+
+
+    // var testTrials = [
+    // {stimulus: imageTrials[count], cue: cueTrials[count]}
+    // ];
+    
+
+    // var testStimuli = [
+    //     {stimulus: "testImageSet/1019.jpg", cue: upArrow},
+    //     {stimulus: "testImageSet/1022.jpg", cue: downArrow},
+    //     {stimulus: "testImageSet/1026.jpg", cue: downArrow},
+    //     {stimulus: "testImageSet/1030.jpg", cue: downArrow}
+    // ];
+    var testStimuli = [];
+    for (var i=0; i<randImages.length; i++) {
+      var trial_obj = {stimulus: randImages[i], cue: randCues[i]};
+      testStimuli.push(trial_obj);
+    }
+    console.log('test stimuli array: ', testStimuli); // print the array to the console to see if this worked as expected
+
+
+
+
+
+
+  
+    var fixation = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: jsPsych.NO_KEYS,
+      trial_duration: function(){
+        return jsPsych.randomization.sampleWithoutReplacement([1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000], 1)[0];
+      },
+      data: {test_part: 'fixation'}
+    };
+    
+
+    var testTrial = {
+      type: "image-keyboard-response",
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 2000,
+      //timeline: trials
+    }
+    
+    var cueTrial = {
+        type: "html-keyboard-response",
+        stimulus: jsPsych.timelineVariable('cue'),
+        trial_duration: 2000
+    };
+    
+    // defining two different response scales that can be used.
+    var scale_1 = ["1", "2", "3", "4"];
+  
+    var responseTrial = {
+        type: 'survey-likert',
+        questions: [{prompt: "How negative do you feel?", labels: scale_1}],
+    };
+    var test_procedure = {
+        timeline: [cueTrial, testTrial, responseTrial, fixation],
+        timeline_variables: testStimuli,
+    }
+    // jsPsych.data.addProperties({
+    // subject: subjectID
+    // });
+    
+    timeline.push(test_procedure);
+    
+    jsPsych.init({
+      timeline: timeline,
+      on_finish: saveData
+});
+
+
+
+</script>
+</html>
