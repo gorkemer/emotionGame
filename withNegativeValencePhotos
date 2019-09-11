@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Practice</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="jspsych-6.0.5/jspsych.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-html-slider-response.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-survey-likert.js"></script>
+<script src="jspsych-6.0.5/plugins/jspsych-survey-text.js"></script>
+
+<link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+
+</head>
+<body> 
+<!-- %style="background-color: color" -->
+  
+</body>
+
+
+<script>
+
+
+
+  function saveData() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if(xhr.status == 200){
+        var response = JSON.parse(xhr.responseText);
+        console.log(response.success);
+      }
+    };
+    xhr.send(jsPsych.data.get().json());
+  }
+  
+  function replicateArray(array, n) {
+    // Create an array of size "n" with undefined values
+    var arrays = Array.apply(null, new Array(n)); 
+
+    // Replace each "undefined" with our array, resulting in an array of n copies of our array
+    arrays = arrays.map(function() { return array });
+
+    // Flatten our array of arrays
+    return [].concat.apply([], arrays);
+  }
+
+
+
+  ///variables for drawing arrows
+  
+    var downArrow = "<p> <span style='font-size:100px;color: transparent;  text-shadow: 0 0 0 green; '>&#8681</span>"
+    var lookNeutral = "<span style='float: middle; font-size: 200px'>&#127909</span> " 
+    var upArrow = "<span style='font-size:220px; color: transparent;  text-shadow: 0 0 0 red;'>&#8679</span></p>"
+
+
+    /* create timeline */
+    var timeline = [];
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin." 
+    };
+    timeline.push(welcome);
+    
+
+    /* define welcome message trial */
+    //var id = prompt("Please enter your pin number")
+    // defining groups of questions that will go together.
+    var survey_trial = {
+      type: 'survey-text',
+      questions: [{prompt: "Subject ID"}, {prompt: "Date"}],
+      // }
+    };
+  
+    ///var subjectID = survey_trial.responses('Q0')
+    timeline.push(survey_trial);
+    
+    // var cue_image_procedure = {
+    //   timeline: [{cueTrial},
+    //   {testTrial},
+    //   {responseTrial},
+    //   {fixation}
+    //   ]
+
+    //   timeline_variables: [
+    //     {stimulus: "testImageSet/1019.jpg", cue: upArrow},
+    //     {stimulus: "testImageSet/1022.jpg", cue: downArrow}
+    //   ]
+    // }
+
+
+    //creating images lowest valance to highest
+    var images = [
+      "testImageSet/3053.jpg", 
+      "testImageSet/3102.jpg",
+      "testImageSet/3064.jpg",
+      "testImageSet/3000.jpg",
+      "testImageSet/3170.jpg", 
+      "testImageSet/3080.jpg",
+      "testImageSet/3063.jpg",
+      "testImageSet/9410.jpg",
+      "testImageSet/3131.jpg", 
+      "testImageSet/3015.jpg",
+      "testImageSet/3266.jpg",
+      "testImageSet/3168.jpg",
+      "testImageSet/3120.jpg", 
+      "testImageSet/3130.jpg",
+      "testImageSet/3000.jpg",
+      "testImageSet/3100.jpg",
+      "testImageSet/9940.jpg", 
+      "testImageSet/3001.jpg",
+      "testImageSet/3005.1.jpg",
+      "testImageSet/9075.jpg",
+      "testImageSet/9040.jpg", 
+      "testImageSet/9570.jpg",
+      "testImageSet/9183.jpg",
+      "testImageSet/3069.jpg",
+      "testImageSet/3010.jpg", 
+      "testImageSet/9413.jpg",
+      "testImageSet/6563.jpg",
+      "testImageSet/2800.jpg",
+      "testImageSet/3110.jpg", 
+      "testImageSet/3060.jpg",
+      "testImageSet/3010.jpg",
+      "testImageSet/2095.jpg",
+      "testImageSet/3530.jpg", 
+      "testImageSet/3301.jpg",
+      "testImageSet/3068.jpg",
+      "testImageSet/9187.jpg",
+      "testImageSet/3059.jpg", 
+      "testImageSet/3261.jpg",
+      "testImageSet/3225.jpg",
+      "testImageSet/9412.jpg",
+      "testImageSet/9405.jpg", 
+      "testImageSet/3140.jpg",
+      "testImageSet/9433.jpg",
+      "testImageSet/3062.jpg",
+      "testImageSet/3350.jpg", 
+      "testImageSet/3071.jpg",
+      "testImageSet/9325.jpg",
+      "testImageSet/9635.1.jpg",
+      "testImageSet/6350.jpg", 
+      "testImageSet/3016.jpg",
+      "testImageSet/3101.jpg",
+      "testImageSet/3030.jpg",
+      "testImageSet/2703.jpg", 
+      "testImageSet/3180.jpg",
+      "testImageSet/6520.jpg",
+      "testImageSet/3191.jpg",
+      "testImageSet/2205.jpg", 
+      "testImageSet/9571.jpg",
+      "testImageSet/9185.jpg",
+      "testImageSet/9252.jpg",
+      "testImageSet/6313.jpg", 
+      "testImageSet/9253.jpg",
+      "testImageSet/3230.jpg",
+      "testImageSet/9253.jpg",
+      "testImageSet/9921.jpg", 
+      "testImageSet/9800.jpg",
+      "testImageSet/9910.jpg",
+      "testImageSet/9414.jpg",
+      "testImageSet/9229.jpg", 
+      "testImageSet/3195.jpg",
+      "testImageSet/3103.jpg",
+      "testImageSet/9810.jpg",
+      "testImageSet/2352.2.jpg", 
+      "testImageSet/9163.jpg",
+      "testImageSet/9560.jpg",
+      "testImageSet/6022.jpg",
+      "testImageSet/6560.jpg", 
+      "testImageSet/2811.jpg",
+      "testImageSet/9140.jpg",
+      "testImageSet/6570.jpg",
+      "testImageSet/6540.jpg", 
+      "testImageSet/6212.jpg",
+      "testImageSet/2375.1.jpg",
+      "testImageSet/9421.jpg",
+      "testImageSet/9326.jpg", 
+      "testImageSet/6415.jpg",
+      "testImageSet/6021.jpg",
+      "testImageSet/3500.jpg",
+      "testImageSet/6360.jpg", 
+      "testImageSet/9222.jpg",
+      "testImageSet/9322.jpg",
+      "testImageSet/9332.jpg",
+      "testImageSet/9301.jpg", 
+      "testImageSet/9300.jpg",
+      "testImageSet/3064.jpg",
+      "testImageSet/9181.jpg",
+      "testImageSet/3150.jpg", 
+      "testImageSet/2345.1.jpg",
+      "testImageSet/9901.jpg",
+      "testImageSet/9435.jpg",
+      "testImageSet/9991.jpg", 
+      "testImageSet/3181.jpg",
+      "testImageSet/3051.jpg",
+      "testImageSet/9428.jpg",
+      "testImageSet/9420.jpg", 
+      "testImageSet/6315.jpg",
+      "testImageSet/9302.jpg",
+      "testImageSet/3061.jpg",
+      "testImageSet/9902.jpg", 
+      "testImageSet/6243.jpg",
+      "testImageSet/9908.jpg",
+      "testImageSet/9006.jpg",
+      "testImageSet/3550.1.jpg", 
+      "testImageSet/3400.jpg",
+      "testImageSet/9903.jpg",
+      "testImageSet/6230.jpg",
+      "testImageSet/6821.jpg", 
+      "testImageSet/9904.jpg",
+      "testImageSet/9295.jpg",
+      "testImageSet/9340.jpg",
+
+    ];
+
+    var cues = [
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    upArrow,
+    downArrow,
+    lookNeutral, 
+    upArrow];
+    
+    //shuffling the lists
+    var randImages = jsPsych.randomization.shuffle(images);
+    var randCues = jsPsych.randomization.shuffle(cues);
+
+    //feed it to the trial lists
+    var imageTrials = [];
+    var cueTrials = [];
+    
+    for (var i = 0; i < randImages.length; i++){
+      imageTrials.push({
+        stimulus: imageTrials[i]
+      })
+    }
+
+    for (var i = 0; i < randCues.length; i++){
+      cueTrials.push({
+        stimulus: randCues[i]
+      })
+    }
+
+    // var testStimuli = [];
+    // for (var i=0; i<randImages.length; i++) {
+    //   var trial_obj = {stimulus: randImages[i], cue: randCues[i]};
+    //   testStimuli.push(trial_obj);
+    // }
+    // console.log('test stimuli array: ', testStimuli); // print the array to the console to see if this worked as expected
+
+    var testStimuli = [];
+    var testStimuli_increase = [];
+    var testStimuli_decrease = [];
+    for (var i=0; i<images.length; i++) {
+
+      if (i%3 == 0){ //first condition: lookneutral
+        var trial_obj = {stimulus: images[i], cue: lookNeutral};
+      } 
+
+      else if (i%3 == 1){ //second condition: increase
+        var trial_obj = {stimulus: images[i], cue: upArrow};
+      } 
+
+      else if (i%3 == 2){ //third condition: increase
+        var trial_obj = {stimulus: images[i], cue: downArrow};
+      } 
+      testStimuli.push(trial_obj);
+    }
+    console.log('test stimuli array: ', testStimuli); // print the array to the console to see if this worked as expected
+
+
+
+
+
+
+
+
+    //Trial initialization  
+    var fixation = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: jsPsych.NO_KEYS,
+      trial_duration: function(){
+        return jsPsych.randomization.sampleWithoutReplacement([1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000], 1)[0];
+      },
+      data: {test_part: 'fixation'}
+    };
+    
+    var testTrial = {
+      type: "image-keyboard-response",
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 2000,
+      //timeline: trials
+    }
+    
+    var cueTrial = {
+        type: "html-keyboard-response",
+        stimulus: jsPsych.timelineVariable('cue'),
+        trial_duration: 2000
+    };
+    
+    // defining two different response scales that can be used.
+    var scale_1 = ["1", "2", "3", "4"];
+  
+    var responseTrial = {
+        type: 'survey-likert',
+        questions: [{prompt: "How negative do you feel?", labels: scale_1}],
+    };
+    var test_procedure = {
+        timeline: [cueTrial, testTrial, responseTrial, fixation],
+        timeline_variables: testStimuli,
+    }
+    // jsPsych.data.addProperties({
+    // subject: subjectID
+    // });
+    
+    timeline.push(test_procedure);
+    
+    jsPsych.init({
+      timeline: timeline,
+      on_finish: saveData
+});
+
+
+
+</script>
+</html>
