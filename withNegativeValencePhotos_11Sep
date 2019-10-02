@@ -53,8 +53,8 @@
   ///variables for drawing arrows
   
     var downArrow = "<p> <span style='font-size:100px;color: transparent;  text-shadow: 0 0 0 green; '>&#8681</span>"
-    var lookNeutral = "<span style='float: middle; font-size: 200px'>&#127909</span> " 
-    var upArrow = "<span style='font-size:220px; color: transparent;  text-shadow: 0 0 0 red;'>&#8679</span></p>"
+    var lookNeutral = "<span style='float: middle; font-size: 100px'>&#127909</span> " 
+    var upArrow = "<span style='font-size:100px; color: transparent;  text-shadow: 0 0 0 red;'>&#8679</span></p>"
 
 
     /* create timeline */
@@ -264,25 +264,25 @@
     lookNeutral, 
     upArrow];
     
-    //shuffling the lists
-    var randImages = jsPsych.randomization.shuffle(images);
-    var randCues = jsPsych.randomization.shuffle(cues);
+    // //shuffling the lists
+    // var randImages = jsPsych.randomization.shuffle(images);
+    // var randCues = jsPsych.randomization.shuffle(cues);
 
-    //feed it to the trial lists
-    var imageTrials = [];
-    var cueTrials = [];
+    // //feed it to the trial lists
+    // var imageTrials = [];
+    // var cueTrials = [];
     
-    for (var i = 0; i < randImages.length; i++){
-      imageTrials.push({
-        stimulus: imageTrials[i]
-      })
-    }
+    // for (var i = 0; i < randImages.length; i++){
+    //   imageTrials.push({
+    //     stimulus: imageTrials[i]
+    //   })
+    // }
 
-    for (var i = 0; i < randCues.length; i++){
-      cueTrials.push({
-        stimulus: randCues[i]
-      })
-    }
+    // for (var i = 0; i < randCues.length; i++){
+    //   cueTrials.push({
+    //     stimulus: randCues[i]
+    //   })
+    // }
 
     // var testStimuli = [];
     // for (var i=0; i<randImages.length; i++) {
@@ -311,12 +311,8 @@
     }
     console.log('test stimuli array: ', testStimuli); // print the array to the console to see if this worked as expected
 
-
-
-
-
-
-
+    //randomizing the order of objects
+    testStimuliRand = jsPsych.randomization.shuffle(testStimuli)
 
     //Trial initialization  
     var fixation = {
@@ -352,7 +348,7 @@
     };
     var test_procedure = {
         timeline: [cueTrial, testTrial, responseTrial, fixation],
-        timeline_variables: testStimuli,
+        timeline_variables: testStimuliRand,
     }
     // jsPsych.data.addProperties({
     // subject: subjectID
