@@ -47,11 +47,11 @@
     /* create timeline */
     var timeline = [];
     
-    timeline.push({
+/*    timeline.push({
       type: 'fullscreen',
       fullscreen_mode: true
     });
-
+*/
 
     /* define welcome message trial */
     var welcome = {
@@ -87,8 +87,18 @@
     
     timeline.push(survey_trial);
 
-    // getting the subject condition variable from the url sent out the subjects
-    var subGroup = jsPsych.data.getURLVariable('subGroup')
+    //assigning participant group randomly
+    var y =Math.random();
+    if(y<0.33){
+    subGroup =1;
+    }
+    else if (0.33 <= y && y <0.66){
+    subGroup =2;
+    }
+    else if (0.66 <= y){
+    subGroup =3;
+    }
+
 
     if (typeof subGroup === "undefined") {
     alert("subject condition is undefined, assigning arbitrarily");
@@ -308,12 +318,12 @@
     
     timeline.push(test_procedure);
 
-    // exit fullscreen mode
+/*    // exit fullscreen mode
     timeline.push({
       type: 'fullscreen',
       fullscreen_mode: false
     });
-    
+    */
 // call the saveData function after the experiment is over
 jsPsych.init({
   timeline: timeline,
