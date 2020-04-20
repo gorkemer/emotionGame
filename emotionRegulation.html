@@ -1,115 +1,324 @@
 <!DOCTYPE html>
 <html>
 <head>
- <title>Practice</title>
+<title>Practice</title>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="../jspsych-6.0.5/jspsych.js"></script>
+<script src="../jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
+<script src="../jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
+<script src="../jspsych-6.0.5/plugins/jspsych-html-slider-response.js"></script>
+<script src="../jspsych-6.0.5/plugins/jspsych-survey-likert.js"></script>
+<script src="custom-plugins/jspsych-survey-likert-timeLocked.js"></script>
+<script src="../jspsych-6.0.5/plugins/jspsych-survey-text.js"></script>
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="jspsych-6.0.5/jspsych.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-html-slider-response.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-survey-likert.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-survey-text.js"></script>
+<link href="../jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+<script src="../jspsych-6.0.5/plugins/jspsych-fullscreen.js"></script>
 
-
-  <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
 </head>
-<body></body>
-
+<body> 
+<!-- %style="background-color: color" -->
+  
+</body>
 
 <script>
 
-function saveData() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onload = function() {
-    if(xhr.status == 200){
-      var response = JSON.parse(xhr.responseText);
-      console.log(response.success);
-    }
-  };
-  xhr.send(jsPsych.data.get().json());
-}
+  function saveData() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if(xhr.status == 200){
+        var response = JSON.parse(xhr.responseText);
+        console.log(response.success);
+      }
+    };
+    xhr.send(jsPsych.data.get().json());
+  }
 
-    ///variables for drawing arrows
-    var upArrow = "<p> <span style=font-size:200px; position:absolute; left: 100px'>&#8681;</span>"
-    var downArrow = "<span style='float: middle; font-size: 200px'>&#127909;</span> " 
-    var lookNeutral = "<span style= font-size:220px;'>&#8679;</span></p>"
+
+  
+  ///variables for drawing arrows
+    var downArrow = "<p> <span style='font-size:200px;color: transparent;  text-shadow: 0 0 0 green; '>&#8681</span>"
+    var look = "<span style='float: middle; font-size: 200px'>&#127909</span> " 
+    var upArrow = "<span style='font-size:200px; color: transparent;  text-shadow: 0 0 0 red;'>&#8679</span></p>"
 
 
     /* create timeline */
     var timeline = [];
+    
+    timeline.push({
+      type: 'fullscreen',
+      fullscreen_mode: true
+    });
 
+
+    /* define welcome message trial */
     var welcome = {
       type: "html-keyboard-response",
-      stimulus: "Welcome to the experiment. Press any key to begin." 
+      stimulus: "<p>In this experiment, you will be presenting with highly arousing and aversive pictures.</p>" +
+      "<p> Each picture/trial starts with an instruction screen showing a symbol, like one of the examples below. </p>" +
+      "<img style='height: 50%; width: 50%; object-fit: cover'; src='welcomeImage.png'></img>"+
+     "<div style='margin: auto 0;text-align:center;'>" + 
+      "<p style='display:inline-block;min-width:65.5%;'> In the <b><font color='red'>up arrow</font></b> condition, you are asked to engage yourself with the depicted situation (e.g. imagining a close friend/family member in the situation depicted in the picture). </p>"+ 
+      "<p style='display:inline-block;min-width:90.5%;'>  Conversely, in the <b><font color='green'>down arrow</font></b>, condition, you are asked to reduce the intensity of the negative emotion by distancing yourself from the image like a detached observer (e.g. thinking the depicted situation is not real).<p>" +
+      "<pstyle='display:inline-block;min-width:37.5%';> In the <b><font color='dimgray'>camera</font></b> condition, you are asked to simply attend and allow yourself to experience/feel any emotional responses.</p>" +
+      "<br> <p>Subsequent to the images you will be asked to rate your current emotional state with a 7 point (1-7) Likert scale (less negative to very negative).</p>" +
+      "<br> <p>Press any key to begin.</li> </ul>"+
+      "</div>",
+      post_trial_gap: 1000
     };
     timeline.push(welcome);
-    /* define welcome message trial */
 
-     var id = prompt("Please enter your pin number")
 
-    // defining groups of questions that will go together.
+
     var survey_trial = {
       type: 'survey-text',
-      questions: [{prompt: "Subject ID"}, {prompt: "Date"}],
-      // }
-    };
-	
-    ///var subjectID = survey_trial.responses('Q0')
+      questions: [{prompt: "Participant ID"}],
+      on_finish: function(data){
+      var responses = JSON.parse(data.responses);
+      var code = responses.Q0;
+      jsPsych.data.addProperties({sub_code: code}) // update the global variable
+      console.log('The trial just finished loading.', code);
+      }
+      // data: {written: randomGroup}
+    }
+
+    
     timeline.push(survey_trial);
 
-    var testStimuli = [
-        {stimulus: "testImageSet/1019.jpg", cue: upArrow},
-        {stimulus: "testImageSet/1022.jpg", cue: downArrow}
+    // getting the subject condition variable from the url sent out the subjects
+    var subGroup = jsPsych.data.getURLVariable('subGroup')
+
+    if (typeof subGroup === "undefined") {
+    alert("subject condition is undefined, assigning arbitrarily");
+    var subGroup = 1;
+    }
+    jsPsych.data.addProperties({sub_group: subGroup})
+
+    // Note to reader: 
+    // 1- below I defined the image paths by hard coding, it would be better if we can find a 
+    // way to make the program read the file names from a list (but renaming the files might complicate things, we can discuss it further)
+
+    // 2- There are 4 image list below, 3 of them consist of horrible looking pictures, if you want to test the program (seeing the images), I suggest you should comment out those images and only show imagelist 4 (change the 
+    // for loop below as well (e.g. comment out  testStimuli.push(trial_obj1 - 2 - 3) ). 
+    var imageList1 = [ 
+      "testImageSet/3102.jpg", 
+      "testImageSet/3064.jpg",
+      "testImageSet/3130.jpg",
+      "testImageSet/3001.jpg",
+      "testImageSet/3266.jpg",
+      "testImageSet/3100.jpg",
+      "testImageSet/3005.1.jpg",
+      "testImageSet/9570.jpg",
+      "testImageSet/9252.jpg",
+      "testImageSet/2800.jpg",
+
+      "testImageSet/3060.jpg",
+      "testImageSet/3225.jpg",
+      "testImageSet/9187.jpg",
+      "testImageSet/3140.jpg",
+      "testImageSet/9433.jpg",
+      "testImageSet/3350.jpg",
+      "testImageSet/6350.jpg",
+      "testImageSet/3030.jpg",
+      "testImageSet/6520.jpg",
+      "testImageSet/9571.jpg",
     ];
-	
+
+    var imageList2 = [
+      "testImageSet/3053.jpg", 
+      "testImageSet/3170.jpg",
+      "testImageSet/3131.jpg",
+      "testImageSet/3120.jpg",
+      "testImageSet/9253.jpg",
+      "testImageSet/9940.jpg",
+      "testImageSet/9075.jpg",
+      "testImageSet/9183.jpg",
+      "testImageSet/9413.jpg",
+      "testImageSet/3261.jpg",
+
+      "testImageSet/3010.jpg",
+      "testImageSet/3530.jpg",
+      "testImageSet/3068.jpg",
+      "testImageSet/9405.jpg",
+      "testImageSet/3062.jpg",
+      "testImageSet/9325.jpg",
+      "testImageSet/9635.1.jpg",
+      "testImageSet/3101.jpg",
+      "testImageSet/3016.jpg",
+      "testImageSet/9185.jpg",
+    ];
+
+    var imageList3 = [
+      "testImageSet/3063.jpg", 
+      "testImageSet/3080.jpg",
+      "testImageSet/9410.jpg",
+      "testImageSet/3168.jpg",
+      "testImageSet/3000.jpg",
+      "testImageSet/3015.jpg",
+      "testImageSet/9040.jpg",
+      "testImageSet/3069.jpg",
+      "testImageSet/6563.jpg",
+      "testImageSet/3110.jpg",
+
+      "testImageSet/3301.jpg",
+      "testImageSet/3059.jpg",
+      "testImageSet/2095.jpg",
+      "testImageSet/9412.jpg",
+      "testImageSet/3071.jpg",
+      "testImageSet/9921.jpg",
+      "testImageSet/2703.jpg",
+      "testImageSet/3180.jpg",
+      "testImageSet/3191.jpg",
+      "testImageSet/6313.jpg",
+    ];
+
+    // neutral images
+    var imageList4 = [
+      "testImageSet/8065.jpg", 
+      "testImageSet/5940.jpg",
+      "testImageSet/8160.jpg",
+      "testImageSet/7560.jpg",
+      "testImageSet/3250.jpg",
+      "testImageSet/3550.2.jpg",
+      "testImageSet/2220.jpg",
+      "testImageSet/1321.jpg",
+      "testImageSet/5920.jpg",
+      "testImageSet/6900.jpg",
+
+      "testImageSet/1302.jpg",
+      "testImageSet/9422.jpg",
+      "testImageSet/2780.jpg",
+      "testImageSet/9150.jpg",
+      "testImageSet/9411.jpg",
+      "testImageSet/7640.jpg",
+      "testImageSet/1645.jpg",
+      "testImageSet/8475.jpg",
+      "testImageSet/1726.jpg",
+      "testImageSet/2661.jpg",
+
+    ];
+
+    var testStimuli = [];
+
+    //distribution of cues based on the subject condition. This way each participant will see the same image
+    // associated with different cues. 
+    // for (var i=0; i<imageList4.length; i++) {
+    for (var i=0; i<imageList4.length; i++) {
+
+      if (subGroup == 1){ //first condition: cuetype: increase
+
+        var trial_obj1 = {stimulus: imageList1[i], cue: upArrow, imageType:"aversiveImage" ,cueType: "increase"};
+        //tag data variable here
+        var trial_obj2 = {stimulus: imageList2[i], cue: downArrow, imageType:"aversiveImage" ,cueType: "decrease"};
+        //tag data vaiable here
+        var trial_obj3 = {stimulus: imageList3[i], cue: look, imageType:"aversiveImage" ,cueType: "look-negative"};
+        //tag data variable here
+        var trial_obj4 = {stimulus: imageList4[i], cue: look, imageType:"neutralImage" ,cueType: "look-neutral"};
+      } 
+
+      else if (subGroup == 2){ //second condition: cueType: look
+        var trial_obj1 = {stimulus: imageList1[i], cue: look, imageType:"aversiveImage" ,cueType: "look-negative"};
+        //tag data variable here
+        var trial_obj2 = {stimulus: imageList2[i], cue: upArrow, imageType:"aversiveImage" ,cueType: "increase"};
+        //tag data variable here
+        var trial_obj3 = {stimulus: imageList3[i], cue: downArrow, imageType:"aversiveImage" ,cueType: "decrease"};
+        //tag data variable here
+        var trial_obj4 = {stimulus: imageList4[i], cue: look, imageType:"neutralImage" ,cueType: "look-neutral"};
+        //tag data variable here
+      } 
+
+      else if (subGroup == 3){ //third condition: cueType: decrease
+        var trial_obj1 = {stimulus: imageList1[i], cue: downArrow, imageType:"aversiveImage" ,cueType: "decrease"};
+        //tag data variable here
+        var trial_obj2 = {stimulus: imageList2[i], cue: look, imageType:"aversiveImage" ,cueType: "look-negative"};
+        //tag data variable here
+        var trial_obj3 = {stimulus: imageList3[i], cue: upArrow, imageType:"aversiveImage" ,cueType: "increase"};
+        //tag data variable here
+        var trial_obj4 = {stimulus: imageList4[i], cue: look, imageType:"neutralImage" ,cueType: "lookNeutral"};
+        //tag data variable here
+      } 
+
+
+      testStimuli.push(trial_obj1);
+      testStimuli.push(trial_obj2);
+      testStimuli.push(trial_obj3);
+      testStimuli.push(trial_obj4);
+      // randomizing the test stimuli
+      jsPsych.randomization.shuffle(testStimuli);
+    }
+
+
+
+    // console.log('test stimuli array: ', testStimuli); // print the array to the console to see if this worked as expected
+    
+    //Trial initialization  
     var fixation = {
       type: 'html-keyboard-response',
       stimulus: '<div style="font-size:60px;">+</div>',
       choices: jsPsych.NO_KEYS,
-      trial_duration: function(){
-        return jsPsych.randomization.sampleWithoutReplacement([250, 500, 750, 1000, 1250, 1500, 1750, 2000], 1)[0];
-      },
-      data: {test_part: 'fixation'}
+      trial_duration: 1000,
+      data: {
+        stimulus_type: "fixation"
+      }
     };
+    
+    var cueTrial = {
+        type: "html-keyboard-response",
+        stimulus: jsPsych.timelineVariable('cue'),
+        trial_duration: 1500,
+        data: {
+        stimulus_type: "cue"
+      }
+    };
+
 
     var testTrial = {
       type: "image-keyboard-response",
       stimulus: jsPsych.timelineVariable('stimulus'),
       choices: jsPsych.NO_KEYS,
-      trial_duration: 1000
+      trial_duration: 5000,
+      data: {
+        stimulus_type: "image",
+        cue_type: jsPsych.timelineVariable('cueType'),
+        image_type: jsPsych.timelineVariable('imageType')
+      }
     }
-
-    var cueTrial = {
-        type: "html-keyboard-response",
-        stimulus: jsPsych.timelineVariable('cue') ,
-      trial_duration: 1000
-    };
-
-    //jsPsych.timelineVariable('cue') 
-
-    // defining two different response scales that can be used.
-    var scale_1 = ["1", "2", "3", "4"];
-	
+    
+    var scale_1 = ["1", "2", "3", "4", "5", "6", "7"];
+  
     var responseTrial = {
-        type: 'survey-likert',
+        type: 'survey-likert-timeLocked',
         questions: [{prompt: "How negative do you feel?", labels: scale_1}],
+        trial_duration: 2500,
+        data: {
+        stimulus_type: "response"
+      }
     };
+
     var test_procedure = {
         timeline: [cueTrial, testTrial, responseTrial, fixation],
-        timeline_variables: testStimuli
+        timeline_variables: testStimuli,
+        randomize_order: true
     }
     // jsPsych.data.addProperties({
     // subject: subjectID
     // });
     
     timeline.push(test_procedure);
-    jsPsych.init({
-      timeline: timeline,
-      on_finish: saveData
+
+    // exit fullscreen mode
+    timeline.push({
+      type: 'fullscreen',
+      fullscreen_mode: false
+    });
+    
+// call the saveData function after the experiment is over
+jsPsych.init({
+  timeline: timeline,
+   // code to define the experiment structure would go here...
+   on_finish: saveData
 });
 
 
