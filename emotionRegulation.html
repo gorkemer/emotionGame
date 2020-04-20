@@ -71,10 +71,18 @@
     timeline.push(welcome);
 
 
+    var welcome2 = {
+      type: "html-keyboard-response",
+      stimulus: "<p> You will see 32 images in total, and the whole thing will last around 5 minutes.  </p>",
+      post_trial_gap: 1000
+    };
+    timeline.push(welcome2);
+
+
 
     var survey_trial = {
       type: 'survey-text',
-      questions: [{prompt: "Participant ID"}],
+      questions: [{prompt: "Your Name"}],
       on_finish: function(data){
       var responses = JSON.parse(data.responses);
       var code = responses.Q0;
@@ -117,96 +125,51 @@
       "testImageSet/3064.jpg",
       "testImageSet/3130.jpg",
       "testImageSet/3001.jpg",
+
       "testImageSet/3266.jpg",
       "testImageSet/3100.jpg",
       "testImageSet/3005.1.jpg",
       "testImageSet/9570.jpg",
-      "testImageSet/9252.jpg",
-      "testImageSet/2800.jpg",
 
-      "testImageSet/3060.jpg",
-      "testImageSet/3225.jpg",
-      "testImageSet/9187.jpg",
-      "testImageSet/3140.jpg",
-      "testImageSet/9433.jpg",
-      "testImageSet/3350.jpg",
-      "testImageSet/6350.jpg",
-      "testImageSet/3030.jpg",
-      "testImageSet/6520.jpg",
-      "testImageSet/9571.jpg",
     ];
 
     var imageList2 = [
-      "testImageSet/3053.jpg", 
-      "testImageSet/3170.jpg",
-      "testImageSet/3131.jpg",
-      "testImageSet/3120.jpg",
-      "testImageSet/9253.jpg",
-      "testImageSet/9940.jpg",
-      "testImageSet/9075.jpg",
-      "testImageSet/9183.jpg",
-      "testImageSet/9413.jpg",
-      "testImageSet/3261.jpg",
+      "testImageSet/6021.jpg", 
+      "testImageSet/9421.jpg",
+      "testImageSet/9332.jpg",
+      "testImageSet/9300.jpg",
 
-      "testImageSet/3010.jpg",
-      "testImageSet/3530.jpg",
-      "testImageSet/3068.jpg",
-      "testImageSet/9405.jpg",
-      "testImageSet/3062.jpg",
-      "testImageSet/9325.jpg",
-      "testImageSet/9635.1.jpg",
-      "testImageSet/3101.jpg",
-      "testImageSet/3016.jpg",
-      "testImageSet/9185.jpg",
+      "testImageSet/9901.jpg",
+      "testImageSet/6315.jpg",
+      "testImageSet/9302.jpg",
+      "testImageSet/9006.jpg",
+
     ];
 
     var imageList3 = [
-      "testImageSet/3063.jpg", 
-      "testImageSet/3080.jpg",
-      "testImageSet/9410.jpg",
-      "testImageSet/3168.jpg",
-      "testImageSet/3000.jpg",
-      "testImageSet/3015.jpg",
-      "testImageSet/9040.jpg",
-      "testImageSet/3069.jpg",
-      "testImageSet/6563.jpg",
-      "testImageSet/3110.jpg",
+      "testImageSet/6415.jpg", 
+      "testImageSet/6360.jpg",
+      "testImageSet/2345.1.jpg",
+      "testImageSet/9301.jpg",
 
-      "testImageSet/3301.jpg",
-      "testImageSet/3059.jpg",
-      "testImageSet/2095.jpg",
-      "testImageSet/9412.jpg",
-      "testImageSet/3071.jpg",
-      "testImageSet/9921.jpg",
-      "testImageSet/2703.jpg",
-      "testImageSet/3180.jpg",
-      "testImageSet/3191.jpg",
-      "testImageSet/6313.jpg",
+      "testImageSet/3181.jpg",
+      "testImageSet/9420.jpg",
+      "testImageSet/6243.jpg",
+      "testImageSet/9908.jpg",
+
     ];
 
     // neutral images
     var imageList4 = [
-      "testImageSet/8065.jpg", 
-      "testImageSet/5940.jpg",
-      "testImageSet/8160.jpg",
-      "testImageSet/7560.jpg",
-      "testImageSet/3250.jpg",
-      "testImageSet/3550.2.jpg",
-      "testImageSet/2220.jpg",
-      "testImageSet/1321.jpg",
-      "testImageSet/5920.jpg",
-      "testImageSet/6900.jpg",
+      "testImageSet/9326.jpg", 
+      "testImageSet/9322.jpg",
+      "testImageSet/9181.jpg",
+      "testImageSet/9435.jpg",
 
-      "testImageSet/1302.jpg",
-      "testImageSet/9422.jpg",
-      "testImageSet/2780.jpg",
-      "testImageSet/9150.jpg",
-      "testImageSet/9411.jpg",
-      "testImageSet/7640.jpg",
-      "testImageSet/1645.jpg",
-      "testImageSet/8475.jpg",
-      "testImageSet/1726.jpg",
-      "testImageSet/2661.jpg",
+      "testImageSet/9911.jpg",
+      "testImageSet/9428.jpg",
+      "testImageSet/9902.jpg",
+      "testImageSet/3400.jpg",
 
     ];
 
